@@ -16,7 +16,7 @@ public:
     Senses senses;
     Brain* brain = nullptr;
 
-    Color* getVisualQualia(const vector<Photon>& photons) {
+    Color* getVisualQualia(const std::vector<Photon>& photons) {
         RGBInformation rgb = senses.getRgb(photons);
         return brain->getColorFeeling(rgb);
     }
@@ -37,31 +37,31 @@ public:
     }
 
     Sound* hear(SoundInTheAir *soundInTheAir){
-        cout << "I am " << brain->subjectIdent << " I hear " + soundInTheAir->thingIdent << endl;
+        std::cout << "I am " << brain->subjectIdent << " I hear " + soundInTheAir->thingIdent << std::endl;
         return getSoundQualia(soundInTheAir);
     }
 
     virtual void look(Thing *thing) {
-        vector<Photon> photons = thing->getPhotons();
+        std::vector<Photon> photons = thing->getPhotons();
         getVisualQualia(photons);
-        cout << "I am " << brain->subjectIdent << " I see " << thing->thingIdent << endl;
+        std::cout << "I am " << brain->subjectIdent << " I see " << thing->thingIdent << std::endl;
     }
 
     void feelTheTouch(Thing *thing) {
         getTouchQualia(thing);
-        cout << "I am " << brain->subjectIdent + " I feel the touch of " + thing->thingIdent << endl;
+        std::cout << "I am " << brain->subjectIdent + " I feel the touch of " + thing->thingIdent << std::endl;
     }
 
     virtual Thought* feelTheSmell(OzoneInTheAir *ozone) {
         Smell* smell = getSmellQualia(ozone);
-        cout << "I am " << brain->subjectIdent << " I smell " + ozone->thingIdent << endl;
+        std::cout << "I am " << brain->subjectIdent << " I smell " + ozone->thingIdent << std::endl;
         return nullptr;
     }
 };
 
 class OtherAnimal: public Animal {
 public:
-    OtherAnimal(string ident) {
+    OtherAnimal(std::string ident) {
         brain = new Brain(ident);
         thingIdent = "body of " + ident;
     }
@@ -69,12 +69,12 @@ public:
 
 class Cat: public OtherAnimal {
 public:
-    Cat(string ident): OtherAnimal(ident){}
+    Cat(std::string ident): OtherAnimal(ident){}
 };
 
 class Human: public Animal {
 public:
-    Human(string ident) {
+    Human(std::string ident) {
         brain = new HumanBrain(ident);
         thingIdent = "body of " + ident;
     };
@@ -89,7 +89,7 @@ public:
         return dynamic_cast<HumanBrain*>(brain)->thinkAbout(linkedTo);
     }
 
-    void learn(Thought* thought, string label) {
+    void learn(Thought* thought, std::string label) {
         dynamic_cast<HumanBrain*>(brain)->learn(thought, label);
     }
 
@@ -124,7 +124,7 @@ public:
         auto* thoughtAboutThing =  dynamic_cast<ThoughtAboutThingQualia*>(dynamic_cast<HumanBrain*>(brain)->currentThought);
         if (thoughtAboutThing == nullptr) return;
         if (thoughtAboutThing->qualia == brain->currentQualia) {
-            cout << "I am " << brain->subjectIdent << " I intend move " << thoughtAboutThing->thing->thingIdent << endl;
+            std::cout << "I am " << brain->subjectIdent << " I intend move " << thoughtAboutThing->thing->thingIdent << std::endl;
             thoughtAboutThing->thing->movePosition(10.0);
         }
     }
@@ -138,17 +138,17 @@ public:
         }
     }
 
-    SoundInTheAir say(string message) {
-        cout << "I am " << brain->subjectIdent << " I intend to speak" << endl;
-        cout << thingIdent << " produces sound in the air" << endl;
+    SoundInTheAir say(std::string message) {
+        std::cout << "I am " << brain->subjectIdent << " I intend to speak" << std::endl;
+        std::cout << thingIdent << " produces sound in the air" << std::endl;
         return SoundInTheAir("sound in the air", message);
     }
 
-    string getMessage(Sound *sound) {
+    std::string getMessage(Sound *sound) {
         return dynamic_cast<HumanBrain *>(brain)->getlabel(sound);
     }
 
-    void understand(string message) {
+    void understand(std::string message) {
         return dynamic_cast<HumanBrain *>(brain)->understand(message);
     }
 };

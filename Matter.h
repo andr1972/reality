@@ -4,7 +4,7 @@
 
 class PhysicalEntities: public Being {
 public:
-    string thingIdent;
+    std::string thingIdent;
 };
 
 class Matter: public PhysicalEntities {
@@ -72,8 +72,8 @@ public:
     Thing(float position, MaterialColor materialColor): position(position), materialColor(materialColor){}
 
     Thing() {};
-    vector<Photon> getPhotons() {
-        vector<Photon> photons;
+    std::vector<Photon> getPhotons() {
+        std::vector<Photon> photons;
         for (int i=0; i<10;i++) {
             Photon foton = reflectOffMaterial();
             photons.push_back(foton);
@@ -82,7 +82,7 @@ public:
     }
 
     void movePosition(double delta) {
-        cout << "is moving physical position of " << thingIdent << endl;
+        std::cout << "is moving physical position of " << thingIdent << std::endl;
         position+=delta;
     }
 };
@@ -90,7 +90,7 @@ public:
 class SoundInTheAir: public Matter {
 public:
     int frequency;
-    SoundInTheAir(string ident, string message) { //todo tutaj nie message
+    SoundInTheAir(std::string ident, std::string message) { //todo tutaj nie message
         this->thingIdent = ident;
         if (message == "ozone") frequency=1005;
         else if (message == "pi") frequency=1205;
@@ -100,7 +100,7 @@ public:
 
 class OzoneInTheAir: public Matter {
 public:
-    OzoneInTheAir(string ident) {
+    OzoneInTheAir(std::string ident) {
         this->thingIdent = ident;
     };
 };
@@ -124,14 +124,14 @@ public:
 
 class Planet: public Thing {
 public:
-    Planet(string thingIdent) {
+    Planet(std::string thingIdent) {
         this->thingIdent = thingIdent;
     }
 };
 
 class Senses: public Thing {
 public:
-    RGBInformation getRgb(const vector<Photon> &photons) {
+    RGBInformation getRgb(const std::vector<Photon> &photons) {
         RGBInformation rgb;
         for (auto& photon: photons) {
             switch (photon.energy) {
@@ -166,7 +166,7 @@ public:
 
 class Effigy: public Thing {
 public:
-    Effigy(string thingIdent) {
+    Effigy(std::string thingIdent) {
         this->thingIdent = thingIdent;
     }
 };

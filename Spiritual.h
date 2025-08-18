@@ -7,7 +7,7 @@
 
 class Qualia : public Being {
 public:
-    virtual string kindstr() = 0;
+    virtual std::string kindstr() = 0;
 };
 
 class Color: public Qualia {
@@ -15,13 +15,13 @@ class Color: public Qualia {
 
 class Redness: public Color {
 public:
-    string kindstr() override {
+    std::string kindstr() override {
         return "Redness";
     }
 };
 
 class Whiteness: public Color {
-    string kindstr() override {
+    std::string kindstr() override {
         return "Whiteness";
     }
 };
@@ -29,46 +29,46 @@ class Whiteness: public Color {
 class Sound: Qualia {
 public:
     int kind;
-    string kindstr() override {
+    std::string kindstr() override {
         return "Sound";
     }
 };
 
 class Smell: public Qualia {
 public:
-    string kindstr() override {
+    std::string kindstr() override {
         return "Smell";
     }
 };
 
 class OzoneSmell: public Smell {
 public:
-    string kindstr() override {
+    std::string kindstr() override {
         return "OzoneSmell";
     }
 };
 
 class Touch: public Qualia {
 public:
-    string kindstr() override {
+    std::string kindstr() override {
         return "OzoneSmell";
     }
 };
 
 class Pleasure: Qualia {
 public:
-    string kindstr() override {
+    std::string kindstr() override {
         return "Pleasure";
     }
 };
 
 class Conscious : public Being {
 public:
-    string subjectIdent;
+    std::string subjectIdent;
     Conscious(){ //multibase c++ inheritance need this constructor
         subjectIdent = "??";
     }
-    Conscious(string ident): subjectIdent(ident) {}
+    Conscious(std::string ident): subjectIdent(ident) {}
     Qualia* currentQualia;
 
 };
@@ -104,7 +104,7 @@ public:
     Attribute *opinion;
     Thing *thing;
     ThoughtAboutThingOpinion(Attribute *opinion, Thing *thing): opinion(opinion), thing(thing) {
-        cout << "assigned opinion "<<opinion->toString() << " to thing " << thing->thingIdent << endl;
+        std::cout << "assigned opinion "<< opinion->toString() << " to thing " << thing->thingIdent << std::endl;
     }
 
 //    Thought* clone() override {
@@ -142,9 +142,9 @@ class ThoughtAboutPerson : Thought {
 
 class MemoryItem {
 public:
-    string label;
+    std::string label;
     Thought* thought = nullptr;
-    MemoryItem(Thought* thought, string label):label(std::move(label)) {
+    MemoryItem(Thought* thought, std::string label):label(std::move(label)) {
         //if (thought)
             this->thought = thought;//  ->clone();
     }
@@ -152,14 +152,14 @@ public:
 };
 
 class Memory : public Being {
-    vector<MemoryItem*> memoryItems;
+    std::vector<MemoryItem*> memoryItems;
 public:
     Memory(){};
-    void add(Thought* thought, string label) {
+    void add(Thought* thought, std::string label) {
         memoryItems.emplace_back(new MemoryItem(thought, label));
     }
 
-    MemoryItem *find(string label) {
+    MemoryItem *find(std::string label) {
         for (auto *item: memoryItems) {
             if (item->label == label)
                 return item;
@@ -169,36 +169,36 @@ public:
 };
 
 class Conglomerate : public Being {
-    vector<Qualia*> items;
+    std::vector<Qualia*> items;
 };
 
 class Rational: public virtual Conscious {
 public:
     Thought* currentThought;
     Memory memory;
-    Rational(string ident): Conscious(ident) {}
+    Rational(std::string ident): Conscious(ident) {}
 
-    string getlabel(Sound *sound) {
-        string label;
+    std::string getlabel(Sound *sound) {
+        std::string label;
         if (sound->kind == 100)
             label = "ozone";
         else if (sound->kind == 120)
             label = "pi";
         else
             label = "?";
-        cout << "I am rational " << subjectIdent << " I deduce from sound " << label << endl;
+        std::cout << "I am rational " << subjectIdent << " I deduce from sound " << label << std::endl;
         return label;
     }
 
-    void understand(string label) {
+    void understand(std::string label) {
         MemoryItem *item = memory.find(label);
         if (item) {
-            cout << "I am rational " << subjectIdent << " I understand smell " << label << endl;
+            std::cout << "I am rational " << subjectIdent << " I understand smell " << label << std::endl;
             currentThought = item->thought;
         }
     }
 
-    void learn(Thought* thought, string label) {
+    void learn(Thought* thought, std::string label) {
         memory.add(thought, label);
     }
 };

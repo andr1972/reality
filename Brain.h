@@ -6,7 +6,7 @@
 
 class Brain: public virtual Conscious, public Thing {
 public:
-    Brain(string ident): Conscious(ident) {}
+    Brain(std::string ident): Conscious(ident) {}
 Color* getColorFeeling(RGBInformation rgb) {
     Color* color;
     if (rgb.R>rgb.G && rgb.R>rgb.B)
@@ -34,7 +34,7 @@ Touch* getTouchFeeling(TouchInformation touchInformation) {
 
 class HumanBrain: public virtual Rational, public Brain {
 public:
-    HumanBrain(string ident): Rational(ident), Brain(ident) {
+    HumanBrain(std::string ident): Rational(ident), Brain(ident) {
         subjectIdent = ident;
         thingIdent = "brain " + ident;
     }

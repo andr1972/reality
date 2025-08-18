@@ -6,17 +6,17 @@ class ClassicalInformation : public Being {
 
 class Attribute: public ClassicalInformation {
 public:
-    virtual string toString() = 0;
+    virtual std::string toString() = 0;
 };
 
 class MassAttr: public Attribute {
 public:
-    string toString() override {return "MassAttr";}
+    std::string toString() override {return "MassAttr";}
 };
 
 class AreaAttr: public Attribute {
 public:
-    string toString() override {return "AreaAttr";}
+    std::string toString() override {return "AreaAttr";}
 };
 
 class Number {
