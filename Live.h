@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "Matter.h"
 #include "Brain.h"
 #include "Information.h"
@@ -14,7 +16,7 @@ class Animal: public Living {
 public:
     ~Animal(){}
     Senses senses;
-    Brain* brain = nullptr;
+    std::unique_ptr<Brain> brain;
 
     Color* getVisualQualia(const std::vector<Photon>& photons) {
         RGBInformation rgb = senses.getRgb(photons);
@@ -62,7 +64,7 @@ public:
 class OtherAnimal: public Animal {
 public:
     OtherAnimal(std::string ident) {
-        brain = new Brain(ident);
+        brain = std::make_unique<Brain>(ident);;
         thingIdent = "body of " + ident;
     }
 };
@@ -75,22 +77,22 @@ public:
 class Human: public Animal {
 public:
     Human(std::string ident) {
-        brain = new HumanBrain(ident);
+        brain = std::make_unique<HumanBrain>(ident);
         thingIdent = "body of " + ident;
     };
 
     void look(Thing *thing) {
         Animal::look(thing);
-        dynamic_cast<HumanBrain*>(brain)->thinkAbout(thing);
+        dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(thing);
     }
 
     Thought* lookAndBelieve(Effigy *effigy, Thing* linkedTo) {
         Animal::look(effigy);
-        return dynamic_cast<HumanBrain*>(brain)->thinkAbout(linkedTo);
+        return dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(linkedTo);
     }
 
     void learn(Thought* thought, std::string label) {
-        dynamic_cast<HumanBrain*>(brain)->learn(thought, label);
+        dynamic_cast<HumanBrain*>(brain.get())->learn(thought, label);
     }
 
     Thought* assumeAttribute(Thing* thing, Attribute *attr) {
@@ -115,13 +117,13 @@ public:
 //todo learn smell
     Thought* feelTheSmell(OzoneInTheAir *ozone) override {
         auto smell = Animal::feelTheSmell(ozone);
-        dynamic_cast<HumanBrain*>(brain)->thinkAbout(ozone);
-        auto th = dynamic_cast<HumanBrain*>(brain)->thinkAbout(smell);
+        dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(ozone);
+        auto th = dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(smell);
         return th;
     }
 
     void moveTheThingYouSaw() {
-        auto* thoughtAboutThing =  dynamic_cast<ThoughtAboutThingQualia*>(dynamic_cast<HumanBrain*>(brain)->currentThought);
+        auto* thoughtAboutThing =  dynamic_cast<ThoughtAboutThingQualia*>(dynamic_cast<HumanBrain*>(brain.get())->currentThought);
         if (thoughtAboutThing == nullptr) return;
         if (thoughtAboutThing->qualia == brain->currentQualia) {
             std::cout << "I am " << brain->subjectIdent << " I intend move " << thoughtAboutThing->thing->thingIdent << std::endl;
@@ -130,7 +132,7 @@ public:
     }
 
     void touchTheCat() {
-        auto* thoughtAboutAnimal =  dynamic_cast<ThoughtAboutAnimal*>(dynamic_cast<HumanBrain*>(brain)->currentThought);
+        auto* thoughtAboutAnimal =  dynamic_cast<ThoughtAboutAnimal*>(dynamic_cast<HumanBrain*>(brain.get())->currentThought);
         if (thoughtAboutAnimal == nullptr) return;
         if (thoughtAboutAnimal->qualia == brain->currentQualia) {
             this->feelTheTouch(thoughtAboutAnimal->animal);
@@ -145,10 +147,10 @@ public:
     }
 
     std::string getMessage(Sound *sound) {
-        return dynamic_cast<HumanBrain *>(brain)->getlabel(sound);
+        return dynamic_cast<HumanBrain *>(brain.get())->getlabel(sound);
     }
 
     void understand(std::string message) {
-        return dynamic_cast<HumanBrain *>(brain)->understand(message);
+        return dynamic_cast<HumanBrain *>(brain.get())->understand(message);
     }
 };
