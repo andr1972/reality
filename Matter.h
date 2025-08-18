@@ -40,9 +40,9 @@ public:
 class QuantumField : PhysicalEntities {
     float intensity;
 public:
-    Photon* createPhoton() {
+    std::shared_ptr<Photon> createPhoton() {
         if (random()%int(10000 / intensity) ==0)
-            return new Photon((float)random());
+            return std::make_shared<Photon>((float)random());
         else
             return nullptr;
     }
@@ -159,7 +159,7 @@ public:
         return SmellInformation();
     }
 
-    TouchInformation getInfoAboutTouch(Thing *thing) {
+    TouchInformation getInfoAboutTouch(Thing* thing) {
         return TouchInformation();
     }
 };

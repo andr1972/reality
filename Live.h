@@ -18,44 +18,44 @@ public:
     Senses senses;
     std::unique_ptr<Brain> brain;
 
-    Color* getVisualQualia(const std::vector<Photon>& photons) {
+    std::shared_ptr<Color> getVisualQualia(const std::vector<Photon>& photons) {
         RGBInformation rgb = senses.getRgb(photons);
         return brain->getColorFeeling(rgb);
     }
 
-    Sound* getSoundQualia(SoundInTheAir *sound) {
+    std::shared_ptr<Sound> getSoundQualia(SoundInTheAir *sound) {
         SoundInformation hearingNeuronsInformation = senses.getInfoAboutSound(sound);
         return brain->getSoundFeeling(hearingNeuronsInformation);
     }
 
-    Smell* getSmellQualia(OzoneInTheAir *ozone) {
+    std::shared_ptr<Smell> getSmellQualia(OzoneInTheAir *ozone) {
         SmellInformation infoNeuronowWechu = senses.getInfoAboutSmell(ozone);
         return brain->getSmellFeeling(infoNeuronowWechu);
     }
 
-    Touch* getTouchQualia(Thing *przedmiot) {
-        TouchInformation infoNeuronowDotyku = senses.getInfoAboutTouch(przedmiot);
-        return brain->getTouchFeeling(infoNeuronowDotyku);
+    std::shared_ptr<Touch> getTouchQualia(Thing *thing) {
+        TouchInformation tactileNeuronInfo = senses.getInfoAboutTouch(thing);
+        return brain->getTouchFeeling(tactileNeuronInfo);
     }
 
-    Sound* hear(SoundInTheAir *soundInTheAir){
+    std::shared_ptr<Sound> hear(SoundInTheAir *soundInTheAir){
         std::cout << "I am " << brain->subjectIdent << " I hear " + soundInTheAir->thingIdent << std::endl;
         return getSoundQualia(soundInTheAir);
     }
 
-    virtual void look(Thing *thing) {
+    virtual void look(Thing* thing) {
         std::vector<Photon> photons = thing->getPhotons();
         getVisualQualia(photons);
         std::cout << "I am " << brain->subjectIdent << " I see " << thing->thingIdent << std::endl;
     }
 
-    void feelTheTouch(Thing *thing) {
+    void feelTheTouch(Thing* thing) {
         getTouchQualia(thing);
         std::cout << "I am " << brain->subjectIdent + " I feel the touch of " + thing->thingIdent << std::endl;
     }
 
-    virtual Thought* feelTheSmell(OzoneInTheAir *ozone) {
-        Smell* smell = getSmellQualia(ozone);
+    virtual std::shared_ptr<ThoughtAboutThingQualia> feelTheSmell(OzoneInTheAir *ozone) {
+        auto smell = getSmellQualia(ozone);
         std::cout << "I am " << brain->subjectIdent << " I smell " + ozone->thingIdent << std::endl;
         return nullptr;
     }
@@ -81,22 +81,23 @@ public:
         thingIdent = "body of " + ident;
     };
 
-    void look(Thing *thing) {
+    void look(Thing* thing) {
         Animal::look(thing);
-        dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(thing);
+        dynamic_cast<HumanBrain*>(brain.get())->thinkAboutThing(thing);
     }
 
-    Thought* lookAndBelieve(Effigy *effigy, Thing* linkedTo) {
+    std::shared_ptr<Thought> lookAndBelieve(Effigy *effigy, Thing* linkedTo) {
         Animal::look(effigy);
-        return dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(linkedTo);
+        return dynamic_cast<HumanBrain*>(brain.get())->thinkAboutThing(linkedTo);
     }
 
-    void learn(Thought* thought, std::string label) {
+    //todo learn about thing, animal, etc
+    void learn(const std::shared_ptr<Thought> &thought, std::string label) {
         dynamic_cast<HumanBrain*>(brain.get())->learn(thought, label);
     }
 
-    Thought* assumeAttribute(Thing* thing, Attribute *attr) {
-        return new ThoughtAboutThingOpinion(attr, thing);
+    std::shared_ptr<Thought> assumeAttribute(Thing* thing, Attribute *attr) {
+        return std::make_shared<ThoughtAboutThingOpinion>(attr, thing);
 
 
         /*
@@ -115,15 +116,15 @@ public:
          * */
     };
 //todo learn smell
-    Thought* feelTheSmell(OzoneInTheAir *ozone) override {
+    std::shared_ptr<ThoughtAboutThingQualia> feelTheSmell(OzoneInTheAir *ozone) override {
         auto smell = Animal::feelTheSmell(ozone);
-        dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(ozone);
-        auto th = dynamic_cast<HumanBrain*>(brain.get())->thinkAbout(smell);
-        return th;
+        dynamic_cast<HumanBrain*>(brain.get())->thinkAboutThing(ozone);
+        return dynamic_cast<HumanBrain*>(brain.get())->thinkAboutThing(smell.get());
     }
 
     void moveTheThingYouSaw() {
-        auto* thoughtAboutThing =  dynamic_cast<ThoughtAboutThingQualia*>(dynamic_cast<HumanBrain*>(brain.get())->currentThought);
+        auto thought =  dynamic_cast<HumanBrain*>(brain.get())->currentThought.get();
+        auto thoughtAboutThing =  dynamic_cast<ThoughtAboutThingQualia*>(thought);
         if (thoughtAboutThing == nullptr) return;
         if (thoughtAboutThing->qualia == brain->currentQualia) {
             std::cout << "I am " << brain->subjectIdent << " I intend move " << thoughtAboutThing->thing->thingIdent << std::endl;
@@ -132,10 +133,11 @@ public:
     }
 
     void touchTheCat() {
-        auto* thoughtAboutAnimal =  dynamic_cast<ThoughtAboutAnimal*>(dynamic_cast<HumanBrain*>(brain.get())->currentThought);
+        auto thought = dynamic_cast<HumanBrain*>(brain.get())->currentThought.get();
+        auto thoughtAboutAnimal =  dynamic_cast<ThoughtAboutAnimal*>(thought);
         if (thoughtAboutAnimal == nullptr) return;
         if (thoughtAboutAnimal->qualia == brain->currentQualia) {
-            this->feelTheTouch(thoughtAboutAnimal->animal);
+            this->feelTheTouch(thoughtAboutAnimal->animal.get());
             thoughtAboutAnimal->animal->feelTheTouch(this);
         }
     }

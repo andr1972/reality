@@ -47,7 +47,7 @@ void talkAboutOzoneTest() {
     OzoneInTheAir ozoneToday("ozone today");
     person1.feelTheSmell(&ozoneToday);
     SoundInTheAir soundInTheAir = person1.say("ozone");
-    Sound *sound = person2.hear(&soundInTheAir);
+    auto sound = person2.hear(&soundInTheAir).get();
     string message = person2.getMessage(sound);
     person2.understand(message);
     cout << endl;
@@ -60,11 +60,11 @@ void talkAboutIdeasTest() {
     //student.learn()
     //after some years....
     SoundInTheAir soundInTheAir = instructor.say("pi");
-    Sound *sound = student.hear(&soundInTheAir);
+    Sound *sound = student.hear(&soundInTheAir).get();
     string message = student.getMessage(sound);
     student.understand(message);
     soundInTheAir = instructor.say("Mandelbrot");
-    sound = student.hear(&soundInTheAir);
+    sound = student.hear(&soundInTheAir).get();
     message = student.getMessage(sound);
     student.understand(message);
     cout << endl;

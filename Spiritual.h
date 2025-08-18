@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
+
 #include "Fundamental.h"
 #include "Matter.h"
 
@@ -69,8 +71,7 @@ public:
         subjectIdent = "??";
     }
     Conscious(std::string ident): subjectIdent(ident) {}
-    Qualia* currentQualia;
-
+    std::shared_ptr<Qualia> currentQualia;
 };
 
 class Thought;
@@ -90,7 +91,7 @@ template<class Idea> class ThoughtAboutIdea : public Thought {
 
 class ThoughtAboutThingQualia : public Thought {
 public:
-    Qualia *qualia;
+    std::shared_ptr<Qualia> qualia;
     Thing *thing;
     ThoughtAboutThingQualia(Qualia *qualia, Thing *thing);
 //    Thought* clone() override {
@@ -116,8 +117,8 @@ public:
 
 class ThoughtAboutAnimal : public Thought {
 public:
-    Qualia *qualia;
-    Animal *animal;
+    std::shared_ptr<Qualia> qualia;
+    std::shared_ptr<Animal> animal;
     ThoughtAboutAnimal(Qualia *qualia, Animal *animal);
 //    Thought* clone() override {
 //        auto copy = new ThoughtAboutAnimal(qualia, animal);
@@ -143,8 +144,8 @@ class ThoughtAboutPerson : Thought {
 class MemoryItem {
 public:
     std::string label;
-    Thought* thought = nullptr;
-    MemoryItem(Thought* thought, std::string label):label(std::move(label)) {
+    std::shared_ptr<Thought> thought = nullptr;
+    MemoryItem(const std::shared_ptr<Thought> &thought, std::string label):label(std::move(label)) {
         //if (thought)
             this->thought = thought;//  ->clone();
     }
@@ -152,15 +153,15 @@ public:
 };
 
 class Memory : public Being {
-    std::vector<MemoryItem*> memoryItems;
+    std::vector<std::shared_ptr<MemoryItem>> memoryItems;
 public:
     Memory(){};
-    void add(Thought* thought, std::string label) {
-        memoryItems.emplace_back(new MemoryItem(thought, label));
+    void add(const std::shared_ptr<Thought> &thought, std::string label) {
+        memoryItems.emplace_back(std::make_shared<MemoryItem>(thought, label));
     }
 
-    MemoryItem *find(std::string label) {
-        for (auto *item: memoryItems) {
+    std::shared_ptr<MemoryItem> find(std::string label) {
+        for (auto &item: memoryItems) {
             if (item->label == label)
                 return item;
         }
@@ -174,7 +175,7 @@ class Conglomerate : public Being {
 
 class Rational: public virtual Conscious {
 public:
-    Thought* currentThought;
+    std::shared_ptr<Thought> currentThought;
     Memory memory;
     Rational(std::string ident): Conscious(ident) {}
 
@@ -191,14 +192,14 @@ public:
     }
 
     void understand(std::string label) {
-        MemoryItem *item = memory.find(label);
+        auto item = memory.find(label);
         if (item) {
             std::cout << "I am rational " << subjectIdent << " I understand smell " << label << std::endl;
             currentThought = item->thought;
         }
     }
 
-    void learn(Thought* thought, std::string label) {
+    void learn(const std::shared_ptr<Thought> &thought, std::string label) {
         memory.add(thought, label);
     }
 };
