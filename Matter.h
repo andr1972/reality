@@ -66,7 +66,7 @@ class Thing: public Matter {
         return Photon(500);
     }
 public:
-    virtual ~Thing(){};
+    ~Thing() override{};
     float position;
     MaterialColor materialColor;
     Thing(float position, MaterialColor materialColor): position(position), materialColor(materialColor){}
@@ -74,7 +74,7 @@ public:
     Thing() {};
     std::vector<Photon> getPhotons() {
         std::vector<Photon> photons;
-        for (int i=0; i<10;i++) {
+        for (int i=0; i<4;i++) {
             Photon foton = reflectOffMaterial();
             photons.push_back(foton);
         }

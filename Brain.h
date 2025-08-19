@@ -33,6 +33,8 @@ public:
 
 class HumanBrain: public virtual Rational, public Brain {
 public:
+    ~HumanBrain() {
+    }
     HumanBrain(std::string ident): Rational(ident), Brain(ident) {
         subjectIdent = ident;
         thingIdent = "brain " + ident;

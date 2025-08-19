@@ -81,7 +81,7 @@ class Thing;
 
 class Thought: public Being {
 public:
-    virtual ~Thought() = default;
+    ~Thought() override = default;
     //virtual Thought* clone() = 0;
 };
 
@@ -93,7 +93,7 @@ class ThoughtAboutThingQualia : public Thought {
 public:
     std::shared_ptr<Qualia> qualia;
     Thing *thing;
-    ThoughtAboutThingQualia(Qualia *qualia, Thing *thing);
+    ThoughtAboutThingQualia(const std::shared_ptr<Qualia>& qualia, Thing *thing);
 //    Thought* clone() override {
 //        auto copy = new ThoughtAboutThingQualia(qualia, thing);
 //        return copy;
@@ -118,8 +118,8 @@ public:
 class ThoughtAboutAnimal : public Thought {
 public:
     std::shared_ptr<Qualia> qualia;
-    std::shared_ptr<Animal> animal;
-    ThoughtAboutAnimal(Qualia *qualia, Animal *animal);
+    Animal* animal;
+    ThoughtAboutAnimal(const std::shared_ptr<Qualia>& qualia, Animal *animal);
 //    Thought* clone() override {
 //        auto copy = new ThoughtAboutAnimal(qualia, animal);
 //        return copy;
@@ -128,9 +128,9 @@ public:
 
 class ThoughtAboutHuman : public Thought {
 public:
-    Qualia *qualia;
-    Human *human;//not human due to C++ circular defs
-    ThoughtAboutHuman(Qualia *qualia, Human *human);
+    std::shared_ptr<Qualia> qualia;
+    Human *human;
+    ThoughtAboutHuman(const std::shared_ptr<Qualia>& qualia, Human *human);
 //    Thought* clone() override {
 //        auto copy = new ThoughtAboutHuman(qualia, human);
 //        return copy;

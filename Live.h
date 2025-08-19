@@ -14,7 +14,7 @@ class Plant: public Living {
 
 class Animal: public Living {
 public:
-    ~Animal(){}
+    ~Animal() override{}
     Senses senses;
     std::unique_ptr<Brain> brain;
 
@@ -64,7 +64,7 @@ public:
 class OtherAnimal: public Animal {
 public:
     OtherAnimal(std::string ident) {
-        brain = std::make_unique<Brain>(ident);;
+        brain = std::make_unique<Brain>(ident);
         thingIdent = "body of " + ident;
     }
 };
@@ -137,7 +137,7 @@ public:
         auto thoughtAboutAnimal =  dynamic_cast<ThoughtAboutAnimal*>(thought);
         if (thoughtAboutAnimal == nullptr) return;
         if (thoughtAboutAnimal->qualia == brain->currentQualia) {
-            this->feelTheTouch(thoughtAboutAnimal->animal.get());
+            this->feelTheTouch(thoughtAboutAnimal->animal);
             thoughtAboutAnimal->animal->feelTheTouch(this);
         }
     }

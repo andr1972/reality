@@ -85,11 +85,11 @@ void learnAboutEarthTest() {
 }
 
 int main() {
-    //learnAboutEarthTest();
-    //stoneKickTest();
-    /*chairMovingTest();
-    touchingCatTest();*/
-    //talkAboutOzoneTest();
-    talkAboutIdeasTest();
+    learnAboutEarthTest();
+    // stoneKickTest();
+    // chairMovingTest();
+    // touchingCatTest();
+    // talkAboutOzoneTest();
+    // talkAboutIdeasTest();
     return 0;
 }

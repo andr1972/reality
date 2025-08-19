@@ -2,5 +2,6 @@
 
 class Being {
 public:
-    virtual ~Being(){};
+    virtual ~Being() {
+    };
 };
