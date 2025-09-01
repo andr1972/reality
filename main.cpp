@@ -86,10 +86,10 @@ void learnAboutEarthTest() {
 
 int main() {
     learnAboutEarthTest();
-    // stoneKickTest();
-    // chairMovingTest();
-    // touchingCatTest();
-    // talkAboutOzoneTest();
-    // talkAboutIdeasTest();
+    stoneKickTest();
+    chairMovingTest();
+    touchingCatTest();
+    talkAboutOzoneTest();
+    talkAboutIdeasTest();
     return 0;
 }
